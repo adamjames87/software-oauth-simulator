@@ -38,8 +38,12 @@ export default function App() {
           <div className="flex-1">
             <h1 className="font-semibold text-2xl">Oauth Simulator</h1>
           </div>
-          <div className="flex-0">
+          <div className="flex space-x-4">
+            <a href="/customers/list">Customers</a>
+            <a href="/customers/create">New Customer</a>
+            <a href="">New Organization</a>
           </div>
+
         </div>
         <div className="pb-10">
           <BreadCrumbs breadcrumbs={breadcrumbs} />

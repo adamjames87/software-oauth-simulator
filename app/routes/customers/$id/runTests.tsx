@@ -3,6 +3,9 @@ import {useLoaderData, useMatches} from "@remix-run/react";
 import axios from "axios";
 import jwtDecode, {JwtPayload} from "jwt-decode";
 import {Handle} from "~/components/breadcrumbs";
+import {setToken} from "~/utils/tokenStore.server";
+
+
 
 
 type TokenResponse = {
@@ -24,7 +27,6 @@ export const loader: LoaderFunction = async ({request}) => {
   const url = new URL(request.url);
   const code = url.searchParams.get("code")
 
-
   let accessToken = testToken;
   try {
     const forwardUrl = new URL("http://localhost:3000/oauth/token")
@@ -40,8 +42,10 @@ export const loader: LoaderFunction = async ({request}) => {
       }
     })
     accessToken = result.data.access_token;
+    const claims = result.data["https://hasura.io/jwt/claims"];
+    setToken(parseInt(claims["x-hasura-user-id"]), accessToken);
   } catch (e) {
-    // console.log(e)
+
   }
   const decoded = jwtDecode<JwtPayload>(accessToken , {});
   return json<LoaderData>({code: code, accessToken: accessToken, decoded: decoded})

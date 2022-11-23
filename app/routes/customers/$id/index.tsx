@@ -1,33 +1,35 @@
-import {Form, useFetcher, useLoaderData, useSearchParams, useTransition} from "@remix-run/react";
-import {DataFunctionArgs, json, LoaderFunction} from "@remix-run/node";
+import {Form, useFetcher, useLoaderData, useSearchParams} from "@remix-run/react";
+import {DataFunctionArgs, json} from "@remix-run/node";
 import {CustomerSelection} from "~/testing-helpers/modules/customers";
 import {testingHelpers} from "~/testing-helpers";
 import {SalesItemProductSelection} from "~/testing-helpers/modules/sales";
-import {Simulate} from "react-dom/test-utils";
-import copy = Simulate.copy;
 import {MembershipSelection, OrganizationSelection} from "~/testing-helpers/modules/organizations";
 import {Handle} from "~/components/breadcrumbs";
+import {getToken} from "~/utils/tokenStore.server";
 
 type LoaderData = {
   customer: CustomerSelection,
   sales: SalesItemProductSelection[],
   allOrganizations: OrganizationSelection[],
   memberships: MembershipSelection[],
+  accessToken?: string,
   password?: string | null
 }
 
 export async function loader({request, params}: DataFunctionArgs) {
   const url = new URL(request.url)
   const password = url.searchParams.get("password");
-
   const customerId = parseInt(params.id as string);
   const allOrganizations = await testingHelpers.organizations.listAll();
   const memberships = await testingHelpers.organizations.allMembershipsForCustomer(customerId);
+  const token = getToken(customerId);
+  console.log("token", token)
   return json<LoaderData>({
     customer: await testingHelpers.customers.fetchCustomerById(customerId),
     sales: await testingHelpers.sales.getSalesItemProductsForCustomer(customerId),
     allOrganizations: allOrganizations.filter(org => memberships.findIndex(m => m.organizationId === org.organizationId) < 0),
     memberships: memberships,
+    accessToken: token,
     password: password
   })
 }
@@ -182,7 +184,7 @@ export function AddToOrganizationForm({customer, allOrganizations}: AddtoOrganiz
 
 export default function Customer(): JSX.Element {
   const params = useSearchParams()
-  const {customer, password, sales, allOrganizations, memberships} = useLoaderData<LoaderData>()
+  const {customer, password, sales, allOrganizations, memberships, accessToken} = useLoaderData<LoaderData>()
   const copyEmailAddress = async () => {
     await navigator.clipboard.writeText(customer.email);
   }
@@ -192,16 +194,29 @@ export default function Customer(): JSX.Element {
       <div className="grid grid-cols-2 space-x-6">
         <div className="space-y-4">
           <div className="border border-gray-200 bg-gray-50 text-gray-800 rounded p-2">
-            <pre>
+            <div className="break-all font-mono text-sm bg-gray-50 p-4 rounded border border-gray-200">
+              <pre>
               {JSON.stringify(customer, null, 2)}
-            </pre>
+              </pre>
+            </div>
           </div>
           <div>
-            <div className="cursor-pointer bg-blue-500 px-4 py-2 text-white rounded inline mt-4"
+            <div className="cursor-pointer bg-blue-500 px-4 py-2 text-white rounded inline mt-8"
                  onClick={copyEmailAddress}
             >Copy Email Address
             </div>
           </div>
+          {accessToken && (<div>
+            <h3 className="font-semibold">Token</h3>
+            <div className="break-all font-mono text-sm bg-gray-50 p-4 rounded border border-gray-200">
+              {accessToken}
+            </div>
+
+            <a className="" href={`/customers/${customer.customerId}/runTests`} >
+
+              Run Tests
+            </a>
+          </div>)}
           <SaleList sales={sales} customer={customer}/>
           <div className="border border-vgrey-300 rounded p-2 shadow">
             <span className="font-semibold py-2">Add Order</span>
@@ -216,8 +231,6 @@ export default function Customer(): JSX.Element {
               </select>
               <button type="submit" className="bg-blue-500 text-white rounded p-2 px-4 ml-2">Add Sale</button>
             </Form>
-
-
           </div>
         </div>
         <div>

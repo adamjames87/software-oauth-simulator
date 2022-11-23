@@ -792,11 +792,6 @@ select {
   margin-right: auto;
 }
 
-.my-2 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -823,6 +818,18 @@ select {
   margin-top: 0.5rem;
 }
 
+.mt-12 {
+  margin-top: 3rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.block {
+  display: block;
+}
+
 .inline {
   display: inline;
 }
@@ -843,12 +850,12 @@ select {
   display: none;
 }
 
-.h-4 {
-  height: 1rem;
-}
-
 .h-5 {
   height: 1.25rem;
+}
+
+.h-4 {
+  height: 1rem;
 }
 
 .h-12 {
@@ -1009,14 +1016,14 @@ select {
   border-color: rgb(239 68 68 / var(--tw-border-opacity));
 }
 
-.bg-aspire {
-  --tw-bg-opacity: 1;
-  background-color: rgb(173 31 41 / var(--tw-bg-opacity));
-}
-
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
+
+.bg-aspire {
+  --tw-bg-opacity: 1;
+  background-color: rgb(173 31 41 / var(--tw-bg-opacity));
 }
 
 .bg-vcarvePro {

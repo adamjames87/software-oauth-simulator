@@ -3,6 +3,7 @@ import {testingHelpers} from "~/testing-helpers";
 import {CustomerSalesSelection, CustomerSelection} from "~/testing-helpers/modules/customers";
 import {Link, useLoaderData} from "@remix-run/react";
 import {Handle} from "../../components/breadcrumbs";
+import React from "react";
 
 
 type LoaderData = {
