@@ -1,0 +1,17 @@
+{
+  "name": "Hasura Actions Schema",
+  "schemaPath": "schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "Default GraphQL Endpoint": {
+        "url": "http://localhost:8082/v1/graphql",
+        "headers": {
+          "x-hasura-role": "admin",
+          "x-hasura-admin-secret": "totalaccess"
+        },
+        "introspect": false
+      }
+    }
+  }
+}
+
